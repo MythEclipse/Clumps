@@ -50,9 +50,6 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
     private int age;
     
     @Shadow
-    private int value;
-    
-    @Shadow
     protected abstract int repairPlayerItems(ServerPlayer player, int i);
     
     @Shadow
@@ -60,6 +57,12 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
         
         return false;
     }
+    
+    @Shadow
+    public abstract int getValue();
+    
+    @Shadow
+    protected abstract void setValue(int p_396669_);
     
     @Unique
     public Map<Integer, Integer> clumps$clumpedMap;
@@ -96,7 +99,7 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
             player.takeXpDelay = 0;
             player.take(this, 1);
             
-            if(this.value != 0 || clumps$resolve()) {
+            if(this.getValue() != 0 || clumps$resolve()) {
                 AtomicInteger toGive = new AtomicInteger();
                 clumps$getClumpedMap().forEach((value, amount) -> {
                     Either<IValueEvent, Integer> result = Services.EVENT.fireValueEvent(player, value);
@@ -202,12 +205,14 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
         
         Map<Integer, Integer> map = new HashMap<>();
         if(compoundTag.contains("clumpedMap")) {
-            CompoundTag clumpedMap = compoundTag.getCompound("clumpedMap");
-            for(String s : clumpedMap.getAllKeys()) {
-                map.put(Integer.parseInt(s), clumpedMap.getInt(s));
+            CompoundTag clumpedMap = compoundTag.getCompoundOrEmpty("clumpedMap");
+            for(String s : clumpedMap.keySet()) {
+                clumpedMap.getInt(s).ifPresent(value -> {
+                    map.put(Integer.parseInt(s), value);
+                });
             }
         } else {
-            map.put(value, count);
+            map.put(getValue(), count);
         }
         
         clumps$setClumpedMap(map);
@@ -219,7 +224,7 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
         
         if(clumps$clumpedMap == null) {
             clumps$clumpedMap = new HashMap<>();
-            clumps$clumpedMap.put(this.value, 1);
+            clumps$clumpedMap.put(getValue(), 1);
         }
         return clumps$clumpedMap;
     }
@@ -234,12 +239,12 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
     @Override
     public boolean clumps$resolve() {
         
-        value = clumps$getClumpedMap().entrySet()
+        setValue(clumps$getClumpedMap().entrySet()
                 .stream()
                 .map(entry -> entry.getKey() * entry.getValue())
                 .reduce(Integer::sum)
-                .orElse(1);
-        return value > 0;
+                .orElse(1));
+        return getValue() > 0;
     }
     
 }
