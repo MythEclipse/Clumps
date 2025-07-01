@@ -18,6 +18,8 @@ import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -138,7 +140,7 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
         cir.setReturnValue(clumps$currentEntry
                 .map(foundItem -> {
                     ItemStack itemstack = foundItem.itemStack();
-                    int xpToRepair = EnchantmentHelper.modifyDurabilityToRepairFromXp(player.serverLevel(), itemstack, (int) (actualValue * Services.PLATFORM.getRepairRatio(itemstack)));
+                    int xpToRepair = EnchantmentHelper.modifyDurabilityToRepairFromXp(player.level(), itemstack, (int) (actualValue * Services.PLATFORM.getRepairRatio(itemstack)));
                     int toRepair = Math.min(xpToRepair, itemstack.getDamageValue());
                     itemstack.setDamageValue(itemstack.getDamageValue() - toRepair);
                     if(toRepair > 0) {
@@ -191,29 +193,26 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
     
     
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
-    public void addAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
+    public void addAdditionalSaveData(ValueOutput valueOutput, CallbackInfo ci) {
         
         if(clumps$clumpedMap != null) {
             CompoundTag map = new CompoundTag();
             clumps$getClumpedMap().forEach((value, count) -> map.putInt(String.valueOf(value), count));
-            compoundTag.put("clumpedMap", map);
+            valueOutput.store("clumpedMap", CompoundTag.CODEC, map);
         }
     }
     
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    public void readAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
+    public void readAdditionalSaveData(ValueInput valueInput, CallbackInfo ci) {
         
         Map<Integer, Integer> map = new HashMap<>();
-        if(compoundTag.contains("clumpedMap")) {
-            CompoundTag clumpedMap = compoundTag.getCompoundOrEmpty("clumpedMap");
+        valueInput.read("clumpedMap", CompoundTag.CODEC).ifPresentOrElse(clumpedMap -> {
             for(String s : clumpedMap.keySet()) {
                 clumpedMap.getInt(s).ifPresent(value -> {
                     map.put(Integer.parseInt(s), value);
                 });
             }
-        } else {
-            map.put(getValue(), count);
-        }
+        }, () -> map.put(getValue(), count));
         
         clumps$setClumpedMap(map);
     }
