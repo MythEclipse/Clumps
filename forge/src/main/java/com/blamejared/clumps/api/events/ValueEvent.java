@@ -1,9 +1,12 @@
 package com.blamejared.clumps.api.events;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
-public class ValueEvent extends Event implements IValueEvent {
+public class ValueEvent extends MutableEvent implements IValueEvent {
+    
+    public static final EventBus<ValueEvent> BUS = EventBus.create(ValueEvent.class);
     
     private final Player player;
     private int value;

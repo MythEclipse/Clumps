@@ -24,6 +24,7 @@ minecraft {
             workingDirectory(project.file("run"))
             ideaModule("${rootProject.name}.${project.name}.main")
             args("-mixin.config=${Properties.MODID}.mixins.json")
+            property("eventbus.api.strictRuntimeChecks", "true")
             mods {
                 create(Properties.MODID) {
                     source(sourceSets.main.get())
@@ -49,6 +50,7 @@ dependencies {
     "minecraft"("net.minecraftforge:forge:${Versions.MINECRAFT}-${Versions.FORGE}")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly("5.0.4") } }
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.10")
 }
 
 sourceSets.configureEach {

@@ -14,7 +14,7 @@ public class ForgeEventHandler implements IEventHelper {
     public Either<IValueEvent, Integer> fireValueEvent(Player player, int value) {
         
         ValueEvent event = new ValueEvent(player, value);
-        MinecraftForge.EVENT_BUS.post(event);
+        ValueEvent.BUS.post(event);
         return Either.left(event);
     }
     
@@ -22,7 +22,7 @@ public class ForgeEventHandler implements IEventHelper {
     public Either<IRepairEvent, Integer> fireRepairEvent(Player player, int value) {
         
         RepairEvent event = new RepairEvent(player, value);
-        MinecraftForge.EVENT_BUS.post(event);
+        RepairEvent.BUS.post(event);
         return Either.left(event);
     }
     

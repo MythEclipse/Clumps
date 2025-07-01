@@ -9,7 +9,7 @@ public class Clumps {
     
     public Clumps() {
         
-        ClumpsCommon.pickupXPEvent = (player, experienceOrb) -> MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, experienceOrb));
+        ClumpsCommon.pickupXPEvent = (player, experienceOrb) -> PlayerXpEvent.BUS.post(new PlayerXpEvent.PickupXp(player, experienceOrb));
     }
     
 }

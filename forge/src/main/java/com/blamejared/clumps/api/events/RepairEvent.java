@@ -1,12 +1,15 @@
 package com.blamejared.clumps.api.events;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 /**
  * Fired before an item is repaired, if a repair is performed, then any leftover experience should be set back to this event.
  */
-public class RepairEvent extends Event implements IRepairEvent {
+public class RepairEvent extends MutableEvent implements IRepairEvent {
+    
+    public static final EventBus<RepairEvent> BUS = EventBus.create(RepairEvent.class);
     
     private final Player player;
     private int value;
