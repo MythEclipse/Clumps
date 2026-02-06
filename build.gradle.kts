@@ -11,7 +11,7 @@ plugins {
     `java-library`
 }
 
-version = GMUtils.updatingVersion(Versions.MOD)
+version = Versions.MOD
 
 tasks.create("postDiscord") {
 

@@ -43,7 +43,7 @@ class DefaultPlugin : Plugin<Project> {
         val base = project.extensions.getByType(BasePluginExtension::class.java)
 
         base.archivesName.set("${Properties.NAME}-${project.name.toLowerCase()}-${Versions.MINECRAFT}")
-        project.version = GMUtils.updatingVersion(Versions.MOD)
+        project.version = Versions.MOD
         project.group = Properties.GROUP
 
         project.tasks.withType<GenerateModuleMetadata>().all {
