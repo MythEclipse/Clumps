@@ -51,6 +51,7 @@ class DefaultPlugin : Plugin<Project> {
         }
 
         project.repositories {
+            mavenCentral()
             this.add(this.maven("https://repo.spongepowered.org/repository/maven-public/") {
                 name = "Sponge"
             })
