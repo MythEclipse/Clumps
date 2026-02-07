@@ -11,6 +11,14 @@ plugins {
     `java-library`
 }
 
+allprojects {
+    repositories {
+        mavenCentral()
+        maven("https://maven.parchmentmc.org")
+        maven("https://maven.blamejared.com")
+    }
+}
+
 version = Versions.MOD
 
 tasks.create("postDiscord") {

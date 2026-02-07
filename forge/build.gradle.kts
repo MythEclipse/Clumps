@@ -9,6 +9,7 @@ plugins {
     id("com.blamejared.clumps.loader")
     id("net.minecraftforge.gradle") version ("[6.0,6.2)")
     id("org.spongepowered.mixin") version ("0.7-SNAPSHOT")
+    id("org.parchmentmc.librarian.forgegradle") version ("1.+")
     id("com.modrinth.minotaur")
 }
 
@@ -18,7 +19,7 @@ mixin {
 }
 
 minecraft {
-    mappings("official", Versions.MINECRAFT)
+    mappings("parchment", "2023.09.03-${Versions.MINECRAFT}")
     runs {
         create("client") {
             taskName("Client")
